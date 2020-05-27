@@ -4,22 +4,22 @@ Jinja2 Documentation:    http://jinja.pocoo.org/2/documentation/
 Werkzeug Documentation:  http://werkzeug.pocoo.org/documentation/
 This file creates your application.
 """
-import os
-import psycopg2
+import os, random, datetime, time
 from app import app, db
-from flask import render_template, request, redirect, url_for, flash
+from flask import render_template, request, redirect, url_for, flash, abort
 from app.forms import UserProfileForm
-from app.models import Profile
+from app.models import UserProfile
 from werkzeug.utils import secure_filename
-from werkzeug.security import check_password_hash
+
 
 
 
 ###
 # Routing for your application.
 ###
-def connect_db():
-    return psycopg2.connect(host="localhost", database="project1", user="project1", password="project1")
+
+
+
 @app.route('/')
 def home():
     """Render website's home page."""
@@ -34,52 +34,57 @@ def about():
 @app.route('/profile', methods = ['GET', 'POST'])
 def profile():
 
-    profilePage = UserProfileForm()
+    form = UserProfileForm()
 
-    if request.method == 'POST' and profilePage.validate_on_submit():
-        firstName = profilePage.firstName.data
-        lastName = profilePage.lastName.data
-        gender = profilePage.gender.data
-        #email = profilePage.email.data
-        location = profilePage.location.data
-        biography = profilePage.biography.data
-        photo = profilePage.photo.data
+    if request.method == 'POST' and form.validate_on_submit():
 
-        filename = secure_filename(photo.filename)
-        photo.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        first_name = form.first_name.data
+        last_name = form.last_name.data
+        gender = form.gender.data
+        #email = form.email.data
+        location = form.location.data
+        biography = form.biography.data
 
-        profile = Profile(first_name=firstName, last_name=lastName, gender=gender, location=location, biography=biography, display_pic="uploads/"+filename)
-        db.session.add(profile)
+        display_pic = form.display_pic.data
+        filename = secure_filename(display_pic.filename)
+        display_pic.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+        date_joined = format_date_join()
+
+
+        new_profile = UserProfile(first_name=first_name, last_name=last_name, gender=gender, location=location, biography=biography, display_pic=filename, date_joined=date_joined)
+        db.session.add(new_profile)
         db.session.commit()
 
-        flash('New Profile Created!', 'success')
+        flash('Thank You For Joining Us!. Profile created..', 'success')
         return redirect(url_for('profiles'))
     else:
-        flash_errors(profilePage)
+        flash_errors(form)
 
-    return render_template('profile.html', form = profilePage)
-
-
+    return render_template('profile.html', form=form)
 
 @app.route('/profiles')
 def profiles():
     """Render the website's profiles page."""
-    db = connect_db()
-    cur = db.cursor()
-    cur.execute('SELECT * FROM Profiles')
-    profiles = cur.fetchall()
-    return render_template('profiles.html', profiles=profiles)
+    profiles = db.session.query(UserProfile).all()
+    return render_template('profiles.html',profiles=profiles)
 
 @app.route('/profile/<userid>')
 def loadprofile(userid):
     """Render the website's profiles page."""
-    profile = Profile.query.filter_by(id=int(userid)).first()
-    return render_template('profileloader.html', profile=profile)
+    usertag = UserProfile.query.get(userid)
+    return render_template('loadprofile.html', usertag=usertag)
 
 
-
+def format_date_join():
+    return (time.strftime("%B,%Y"))
 # The functions below should be applicable to all Flask apps.
 ###
+
+def flash_errors(form):
+    for field, errors in form.errors.items():
+        for error in errors:
+            flash("Error in the %s field - %s" % (getattr(form, field).label.text,error))
 
 
 @app.route('/<file_name>.txt')
