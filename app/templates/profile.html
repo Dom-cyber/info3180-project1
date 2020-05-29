@@ -9,22 +9,28 @@
             <form action="{{ url_for('profile') }}" method="post" enctype="multipart/form-data">
                 {{ form.csrf_token }}
                 <div class="form-group">
-                    {{ form.first_name.label }} {{ form.first_name(class="form-control") }}
+                    {{ form.firstname.label }} 
+                    {{ form.firstname(class="form-control") }}
                 </div>
                 <div class="form-group">
-                    {{ form.last_name.label }} {{ form.last_name(class="form-control") }}
+                    {{ form.lastname.label }} 
+                    {{ form.lastname(class="form-control") }}
                 </div>
                 <div class="form-group">
-                    {{ form.location.label }} {{ form.location(class="form-control") }}
+                    {{ form.location.label }} 
+                    {{ form.location(class="form-control") }}
                 </div>
                 <div class="form-group">
-                    {{ form.gender.label }} {{ form.gender(class="form-control") }}
+                    {{ form.gender.label }} 
+                    {{ form.gender(class="form-control") }}
                 </div>
                 <div class="form-group">
-                    {{ form.biography.label }} {{ form.biography(class="form-control") }}
+                    {{ form.biography.label }}
+                     {{ form.biography(class="form-control") }}
                 </div>
                 <div class="form-group">
-                    {{ form.display_pic.label }} {{ form.display_pic(class="form-control") }}
+                    {{ form.display_pic.label }} 
+                    {{ form.display_pic(class="form-control") }}
                 </div>
 
                 <button type="submit" name="submit" id="profileSubmit">Add Profile</button>

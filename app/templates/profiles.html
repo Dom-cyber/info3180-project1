@@ -4,15 +4,15 @@
     <h1 class="title">Profiles</h1>
         {% for profile in profiles %}
             <div class="row border-style center profile profiles-container">
-                <image src="{{ url_for('static', filename='uploads/'+profile.filename) }}" class="pro_pic"/>
+                <image src="{{ url_for('static', 'uploads') }}" class="pro_pic"/>
                     <div class="col pro-data">
-                        <span class="name">{{profile.first_name}}{{profile.last_name}}</span>
-                        <span class="blk"><i class="fa fa-street-view"></i>{{profile.gender}}</span>
-                        <span class="blk"><i class="fa fa-map-marker"></i>{{profile.location}}</span>
+                        <span class="name">{{form.firstname}}{{form.lastname}}</span>
+                        <span class="blk"><i class="fa fa-street-view"></i>{{form.gender}}</span>
+                        <span class="blk"><i class="fa fa-map-marker"></i>{{form.location}}</span>
                     </div>
                 <div class="view-profile center col bio">
                     </br>
-                    <a class="view-btn btn-success" href="{{ url_for('userprofile',userid=profile.id) }}">View profile</a>
+                    <a class="view-btn btn-success" href="{{ url_for('loadprofile') }}">View profile</a>
                 </div>
             </div>
         {% endfor %}

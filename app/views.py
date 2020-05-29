@@ -38,8 +38,8 @@ def profile():
 
     if request.method == 'POST' and form.validate_on_submit():
 
-        first_name = form.first_name.data
-        last_name = form.last_name.data
+        firstname = form.firstname.data
+        lastname = form.lastname.data
         gender = form.gender.data
         #email = form.email.data
         location = form.location.data
@@ -52,8 +52,8 @@ def profile():
         date_joined = format_date_join()
 
 
-        new_profile = UserProfile(first_name=first_name, last_name=last_name, gender=gender, location=location, biography=biography, display_pic=filename, date_joined=date_joined)
-        db.session.add(new_profile)
+        newprofile = UserProfile(first_name=firstname, last_name=lastname, gender=gender, location=location, biography=biography, display_pic=filename)
+        db.session.add(newprofile)
         db.session.commit()
 
         flash('Thank You For Joining Us!. Profile created..', 'success')
